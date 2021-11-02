@@ -1,0 +1,126 @@
+\chapter{Dimensionamento e verifica degli elementi}
+\section{Arcarecci}
+
+\begin{pythontexcustomcode}{py}
+import numpy as np
+def verifica(a,b,name):
+    if a<b:
+        print('La verifica a ' + name + ' è pertanto soddisfatta')
+    else:
+        print('La verifica a ' + name + ' non è soddisfatta')
+\end{pythontexcustomcode}
+
+\begin{pycode}
+# N/mm2
+f_mk = 24
+f_vk = 2.7
+f_c90k = 2.7
+E0mean = 11600
+E005 = 9400
+Gmean = 720
+
+gammaM = 1.45
+kmod = 0.6
+
+M_d = 9.625694375 #kNm
+V_d = 7.7005555 #kN
+
+M_d = M_d * 10**6 
+V_d = V_d * 10**3 
+
+b = 160
+h = 240
+
+l_eff = 2842.5 # sbandamento
+###########################################################
+W = b * h**2 / 6 #sezioni rettangolari
+J = b*h**3 / 12
+
+#Flessione:
+sigma_md = M_d / W
+f_md = kmod * f_mk / gammaM
+
+sigma_mcrit = np.pi/l_eff * b**2 / h * E005 * np.sqrt(Gmean/E0mean)
+lambda_relm = np.sqrt(f_mk/sigma_mcrit)
+if lambda_relm < 0.75:
+    k_crit = 1
+elif lambda_relm < 1.14:
+    k_crit = 1.56 - .75*lambda_relm
+else:
+    k_crit = 1/(lambda_relm**2)
+
+
+#Taglio    
+\end{pycode}
+
+\begin{pysub}
+Dati di progetto per il legno lamellare $GL24h$, $\gamma_M = !{gammaM}$:
+\begin{center}
+    \begin{tabular}{lS[table-format=2.1]@{\hspace{1cm}}lS[table-format=5.0]}
+        \toprule
+        \multicolumn{4}{c}{Valori [\si{\mega\pascal}]} \\
+        \midrule
+        $f_{m,k}$ & !{f_mk} & $E_{0,mean}$ & !{E0mean} \\
+        $f_{v,k}$ & !{f_vk} & $E_{0.05}$ & !{E005} \\
+        $f_{c,90,k}$ & !{f_c90k} & $G_{mean}$ & !{Gmean} \\
+        \bottomrule
+    \end{tabular}
+\end{center} 
+Sezione di verifica: $\SI{!{b}}{} \times \SI{!{h}}{\milli\metre}$
+
+Classe di servizio 2: $k_{mod} = !{kmod}$
+\end{pysub}
+
+
+disegno, momento, taglio, sezione, ecc
+\paragraph{Flessione}
+\begin{equation} 
+    \sigma_{m,d} \leq f_{m,d} = \frac{k_{mod} \cdot f_{m,k}}{\gamma_M} 
+\end{equation}
+
+\begin{pysub}
+La sollecitazione massima la si ha in mezzeria, pertanto è pari, avendo sezione rettangolare, a:
+\[
+\sigma_{m,d} 
+= \frac{M_d}{W} 
+= \frac{M_d}{\dfrac {b \cdot h^2}{6}} 
+= \frac{\SI{!{round(M_d/10**6,3)}e6}{\newton\milli\metre}} {\dfrac {!{b} \cdot !{h}^2}{6} \si{\milli\metre\tothe{3}}} 
+= \SI{!{round(sigma_md,3)}}{\mega\pascal} 
+\]
+\end{pysub}
+
+Sebbene lo sbandamento sia impedito, pur tenendone conto si ha:
+\begin{equation}
+     \sigma_{m,d} \leq k_{crit} \cdot f_{m,d} 
+\end{equation}
+dove 
+\begin{pysub}
+\begin{equation}
+    k_{crit} =
+    \begin{cases}
+        1 & \text{se \quad $ \lambda_{rel,m} \leq 0.75$} \\
+        1.56 - 0.75 \cdot \lambda_{rel,m} & \text{se \quad $0.75 \leq \lambda_{rel,m} \leq 1.4$} \\
+        \dfrac{1}{\lambda_{rel,m}^2} & \text{se \quad $\lambda_{rel,m} \geq 0.75$}
+    \end{cases}
+    \quad =  !{k_crit}
+\end{equation}
+in cui 
+\[
+\begin{split}
+    \lambda_{rel,m} 
+    &= \sqrt{  \frac{f_{m,k}}     {\sigma_{m,crit}}          } 
+    = \sqrt{  \frac{!{f_mk}}     {!{round(sigma_mcrit,1)}}  } 
+    = !{round(lambda_relm,3)} \\
+    \sigma_{m,crit} &= \dfrac{\pi}{l_{eff}} \dfrac{b^2}{h} E_{0.05} \sqrt{\dfrac{G_{mean}}{E_{mean}}} = \SI{!{round(sigma_mcrit,1)}}{\mega\pascal} \\
+    l_{eff} &= \SI{!{l_eff}}{\milli\metre}
+\end{split}
+\]
+e quindi la resistenza di progetto vale
+\[
+    k_{crit} \cdot f_{m,d} 
+    = k_{crit} \cdot \frac{k_{mod} \cdot f_{m,k}}{\gamma_M} 
+    = !{k_crit} \cdot \frac{!{kmod} \cdot \SI{!{f_mk}}{\mega\pascal}}{!{gammaM}} 
+    = \SI{!{round(k_crit * f_md,3)}}{\mega\pascal}
+\]
+\end{pysub}
+\pyc{verifica(sigma_md,k_crit * f_md,'flessione')}
