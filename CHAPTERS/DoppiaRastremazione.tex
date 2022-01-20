@@ -103,6 +103,18 @@ b_eff = 2.5/f_vk * b
 tau_d_05ap = 1.5*V_05ap/(b_eff*h_ap_05)
 sigma_t90d_05ap = sigma_t90d(M_05ap , b , h_ap_05 , k_p)
 
+####
+## Zona a rastremazione semplice
+x_max = l * h_0 / (2*h_ap)
+h_max = h_ap - np.tan(alpha)*(l/2 - x_max) # altezza corrispondente alla x_max
+M_xmax = V_d * x_max - Q*x_max**2 / 2
+sigma_md_max = 6*M_xmax / (b*h_max**2)
+
+f_c90d = f_c90k * kmod / gammaM
+
+k_mAlpha_compressione = 1 / np.sqrt(1 + (np.tan(alpha)*f_md/(1.5*f_vd))**2 + ((np.tan(alpha))**2*f_md/f_c90d)**2 )
+
+
 \end{pycode}
 
 \begin{pysub}[TraveDoppiaRastremazione]
@@ -197,27 +209,83 @@ La sollecitazione vale
 \subsection{Trazione perpendicolare combinata a taglio -- Sezione C}
 Si deve avere 
 \begin{equation}
-    \frac{\tau_d^{0.5\cdot ap}}{f_{v,d}} + \frac{\sigma_{t,90,d}^{0.5\cdot ap}} {k_{dis} \cdot k_{vol} \cdot f_{t,90,d}} \leq 1
+    \frac{\tau_d^{0.5\,ap}}{f_{v,d}} + \frac{\sigma_{t,90,d}^{0.5\,ap}} {k_{dis} \cdot k_{vol} \cdot f_{t,90,d}} \leq 1
 \end{equation}
 
 Occorre dapprima calcolare le azioni di progetto nella sezione C partendo dalla quota della sezione $x^{C} = \dfrac{l}{2} - 0.5\cdot h_{ap}$ =  \SI{!{round(l/2 - 0.5*h_ap,0)}}{\milli\metre}, in quanto il carico e la trave sono simmetriche rispetto la mezzerie.
-Le azioni a tale $x$ valgolo:
+Le azioni a tale $x$ valgono:
 \begin{equation}
-    V_{0.5\cdot ap} = \SI{!{round(V_05ap/10**3,3)}e3}{\newton\milli\metre} \quad M_{0.5\cdot ap} = \SI{!{round(M_05ap/10**6,3)}e6}{\newton\milli\metre}
+    V_{0.5\,ap} = \SI{!{round(V_05ap/10**3,3)}e3}{\newton} \qquad M_{0.5\,ap} = \SI{!{round(M_05ap/10**6,3)}e6}{\newton\milli\metre}
 \end{equation}
 
-Il secondo termine della disequazione di verifica si calcola nello stesso modo di quanto visto nel paragrafo precedente con $M = M_{0.5\cdot ap}$ e $h = h(x^C) = \SI{!{round(h_ap_05,0)}}{\milli\metre}$ variati. 
+Il secondo termine della disequazione di verifica si calcola nello stesso modo di quanto visto nel paragrafo precedente con $M = M_{0.5\,ap}$ e $h = h_{0.5\,ap} = \SI{!{round(h_ap_05,0)}}{\milli\metre}$ variati. 
 Si ha perciò 
 \begin{equation*}
-    \sigma_{t,90,d}^{0.5\cdot ap} = \SI{!{round(sigma_t90d_05ap,3)}}{\mega\pascal}
+    \sigma_{t,90,d}^{0.5\,ap} = \SI{!{round(sigma_t90d_05ap,3)}}{\mega\pascal}
 \end{equation*}
 
+La componente di taglio del primo termine si calcola come:
+\[
+\tau_d^{0.5\,ap} 
+= 1.5 \frac{V_{0.5\,ap}}{b_{eff} \cdot h_{0.5\,ap}} 
+= \frac{\SI{!{round(V_05ap/10**3,3)}e3}{\newton}} {\SI{!{round(b_eff,1)}}{\milli\metre} \cdot \SI{!{round(h_ap_05,0)}}{\milli\metre} } 
+= \SI{!{round(tau_d_05ap,3)}}{\mega\pascal} 
+\]
+in cui dalle NTC (C.4.4.8.1.9) per il legno lamellare si ha:
+\[
+    b_{eff} 
+    = k_{cr} \cdot b 
+    = \dfrac{2.5}{f_{v,k}} \cdot b 
+    = \dfrac{2.5}{!{f_vk}} \cdot !{b}
+    = \SI{!{round(b_eff,1)}}{\milli\metre}
+\]
 
+In definitiva la verifica risulta soddisfatta: 
+\begin{equation}
+    \frac{\SI{!{round(tau_d_05ap,3)}}{\mega\pascal}}{\SI{!{round(f_vd,3)}}{\mega\pascal}} + 
+    \frac{\SI{!{round(sigma_t90d_05ap,3)}}{\mega\pascal}} { !{round(k_dis,3)} \cdot !{round(k_vol,3)} \cdot \SI{!{round(f_t90d,3)}}{\mega\pascal} } 
+    = \SI{!{round(tau_d_05ap/f_vd + sigma_t90d_05ap/(f_t90d * k_dis * k_vol),3) }}{}
+    \leq 1
+\end{equation}
 
+\subsection{Flessione -- Sezione B}
+\paragraph{Bordo inclinato e compresso}
+Avendo un momento flettendo che tende le fibre inferiori, la formula di verifica nel late di travo con il bordo inclinato compresso è 
+\begin{equation}
+    \sigma_{m,\alpha,d} \leq k_{m,\alpha,comp.} \cdot f_{m,d}
+\end{equation}
+\paragraph{Bordo non inclinato e teso}
+La formula di verifica è analoga a quella sopra ma non è presente il coefficiente riduttivo, perciò è automaticamente soddisfatta quando lo è la prima.
 
+Il coefficiente riduttivo vale:
+\begin{equation}
+    k_{m,\alpha,comp.} = \frac{1}{\sqrt{1 + \left( \frac{f_{m,d}}{0.75\,f_{v,d}\tan\alpha} \right)^2 + \left( \frac{f_{m,d}}{f_{t,90,d}\tan\alpha} \right)^2  }} = !{round(k_mAlpha_compressione,3)}
+\end{equation}
 
+Si calcolano quindi le tensioni a flessione nella zona maggiormente sollecitata posta ad una quota $x_max$. 
+Tale quota vale, nel caso di trave simmetrica e carico distribuito:
+\begin{equation}
+    x^{max} = \frac{l \cdot h_0}{2\cdot h_{ap}} = \SI{!{round(x_max,1)}}{\milli\metre}
+\end{equation}
+In corrispondenza di questa sezione si hanno le seguenti caratteristiche:
+\begin{align}
+    h_{x^{max}}
+    &= h_{ap} - \tan \alpha \cdot(0.5\,l - x_{max})
+    = \SI{!{round(h_max,1)}}{\milli\metre}  \\
+    %
+    M_{d}^{max}
+    &= V_d \cdot x^{max} - \dfrac{Q \cdot (x^{max}) ^2}{2}
+    = \SI{!{round(M_xmax/10**6,3)}e6}{\newton\milli\metre} \\
+    %
+    \sigma_{m,d}^{max} = \sigma_{m,\alpha,d}
+    &= \frac{6 \cdot M_{d}^{max}}{b \cdot h_{x^{max}}^2} 
+    = \SI{!{round(sigma_md_max,3)}}{\mega\pascal}
+\end{align}
 
-
+Si ha perciò 
+\[
+    \SI{!{round(sigma_md_max,3)}}{\mega\pascal} <  !{round(k_mAlpha_compressione,3)} \cdot \SI{!{round(f_md,3)}}{\mega\pascal} = \SI{!{round(k_mAlpha_compressione * f_md,3)}}{\mega\pascal}
+\]
 
 
 
