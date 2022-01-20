@@ -6,7 +6,7 @@ d1 = 6.2 # mm
 f_uk = 600 # Mpa
 gamma_M1 = 1.05
 gamma_M2 = 1.25 # acciao. tabella 4.2 vii ntc
-gammaM = 1.5 #legno
+gammaM = 1.5 #connessione in legno 
 kmod = 0.9
 
 rho_k1 = 425
@@ -81,7 +81,7 @@ Entrambe le viti sono sottoggette a puro sforzo assiale ed essendo inclinate ad 
 \end{equation}
 Per la vite sottoposta a sola trazione si tengono conto dei modi di rottura per trazione del materiale acciaio e della rottura per estrazione della vite lato elemento principale $1$ e lato elemento secondario $2$.
 Per la vite sottoposta a sola compressione si tiene conto della rottura per estrazione nei due elementi, e della rottura a instabilità per carico di punta a compressione.
-Infine si tengono conto delle distanze minime dal bordo e dalle estremità .
+Infine si tengono conto delle distanze minime dal bordo e dalle estremità.
 \subsection{Resistenze caratteristiche $Rk$}
 \paragraph{Rottura acciaio}
 \begin{equation}
@@ -212,12 +212,12 @@ in cui
     %
     F_{ax,Rd}^{estr. 1} 
     &= \dfrac{k_{mod} \cdot F_{ax,Rk}^{estr. 1}}{\gamma_{M}} 
-    = \dfrac{!{kmod} \cdot \SI{!{round(F_ax_rk_1,1)}}{\newton}}{!{gamma_M2}} 
+    = \dfrac{!{kmod} \cdot \SI{!{round(F_ax_rk_1,1)}}{\newton}}{!{gammaM}} 
     = \SI{!{round(F_ax_rd_1,1)}}{\newton} \label{eq:viti_b} \\
     F_{ax,Rd}^{estr. 2} 
     %
     &= \dfrac{k_{mod} \cdot F_{ax,Rk}^{estr. 2}}{\gamma_{M}} 
-    = \dfrac{!{kmod} \cdot \SI{!{round(F_ax_rk_2,1)}}{\newton}}{!{gamma_M2}} 
+    = \dfrac{!{kmod} \cdot \SI{!{round(F_ax_rk_2,1)}}{\newton}}{!{gammaM}} 
     = \SI{!{round(F_ax_rd_2,1)}}{\newton} \label{eq:viti_c} \\
     %
     F_{ax,Rd}^{buck} 
