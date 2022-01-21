@@ -8,18 +8,15 @@ timberType = 'lamellare'
 # timberType = 'massiccio'
 
 glulam_class = 'GL28h'
-# N/mm2
-f_mk = 28
-f_vk = 3.5
-f_c90k = 2.5
-f_t90k = 0.5
-E0mean = 12600
-E005 = 10500
-Gmean = 650
-G05 = 540.0
-
-gammaM = 1.45
 kmod = 0.9
+gammaM = 1.45
+k_def = 0.6
+
+f_mk, f_t0k, f_t90k, f_c0k, f_c90k, f_vk, f_rk, \
+E0mean, E005, E90mean, E9005, Gmean, G05, Grmean, Gr05, \
+rho_k, rho_mean = glulam(glulam_class)
+
+f_md, f_t0d, f_t90d, f_c0d, f_c90d, f_vd, f_rd = (kmod * X_k / gammaM for X_k in glulam(glulam_class)[0:7])
 
 alpha = 3.5 # in gradi °
 b = 240
