@@ -117,7 +117,7 @@ f_c90d = f_c90k * kmod / gammaM
 
 k_mAlpha_compressione = 1 / np.sqrt(1 + (np.tan(alpha)*f_md/(1.5*f_vd))**2 + ((np.tan(alpha))**2*f_md/f_c90d)**2 )
 
-
+k_def = 0.6
 \end{pycode}
 
 \begin{pysub}[TraveDoppiaRastremazione]
@@ -131,10 +131,10 @@ k_mAlpha_compressione = 1 / np.sqrt(1 + (np.tan(alpha)*f_md/(1.5*f_vd))**2 + ((n
 \begin{table}[H]
     \centering
     \caption{Azioni di progetto nei punti di sezione indicati in figura per la trave a doppia rastremazione}
-    \begin{tabular}{cS[table-format=4.1] S[table-format=4.3] S[table-format=3.3]}
+    \begin{tabular}{c  S[table-format=4.1] S[table-format=4.3] S[table-format=3.3]}
         \toprule
 		%\multicolumn{4}{c}{Azioni di progetto nei punti di sezione}\\
-        Punto & \multicolumn{1}{c}{$x$ [\si{\milli\metre}]} & \multicolumn{1}{c}{$M_d$ [\si{\kilo\newton\metre}]}& \multicolumn{1}{c}{$V_d$ [\si{\kilo\newton}]} \\
+        Sezione & \multicolumn{1}{c}{$x$ [\si{\milli\metre}]} & \multicolumn{1}{c}{$M_d$ [\si{\kilo\newton\metre}]}& \multicolumn{1}{c}{$V_d$ [\si{\kilo\newton}]} \\
         \midrule
         A & 0. 0               & 0.0                      & !{round(V_d/10**3,3)}   \\
         B & !{round(x_max,1)}  & !{round(M_xmax/10**6,3)} &                        \\
@@ -146,22 +146,20 @@ k_mAlpha_compressione = 1 / np.sqrt(1 + (np.tan(alpha)*f_md/(1.5*f_vd))**2 + ((n
 \begin{table}[H]
     \centering
     \caption{Valori di progetto per la verifica della trave a doppia rastremazione}
-    \begin{tabular}{lS[table-format=2.1] @{\hspace{1cm}}l S[table-format=2.3]}
+    \begin{tabular}{lS[table-format=2.1] @{\hspace{2cm}} lS[table-format=2.3]@{\hspace{2cm}} lS[table-format=5.1]}
         \toprule
-		\multicolumn{4}{c}{Valori geometrici di progetto}\\
+		\multicolumn{6}{c}{Valori geometrici e coefficienti di esposizione o durata del carico}\\
         \midrule
-		$b$      & \SI{!{b}}{\milli\metre}                      & $h_{ap}$        & \SI{!{h_ap}}{\milli\metre}   \\
-		$h_0$    & \SI{!{h_0}}{\milli\metre}                    & $l$           & \SI{!{l}}{\milli\metre}   \\
-		$\alpha$ & \SI{!{round(np.rad2deg(alpha),1)}}{\degree} & $\alpha_{ap}$ & \SI{!{round(np.rad2deg(alpha_ap),1)}}{\degree} \\
+		$b$      & \SI{!{b}}{\milli\metre}     & $h_{ap}$        & \SI{!{h_ap}}{\milli\metre}   & $\alpha$ & \SI{!{round(np.rad2deg(alpha),1)}}{\degree} \\ 
+		$h_0$    & \SI{!{h_0}}{\milli\metre}                    & $l$           & \SI{!{l}}{\milli\metre}   & $\alpha_{ap}$ & \SI{!{round(np.rad2deg(alpha_ap),1)}}{\degree} \\
+        $\gamma_M$      & \SI{!{gammaM}}{}     & $k_{mod}$        & \SI{!{kmod}}{}   & $k_{def}$ & \SI{!{k_def}}{} \\
         \midrule
-        \multicolumn{4}{c}{Valori di resistenza GL28h [\si{\mega\pascal}] } \\
+        \multicolumn{6}{c}{Valori di resistenza GL28h [\si{\mega\pascal}] } \\
         \midrule
-        $f_{m,k}$    & !{f_mk}   & $f_{m,d}$    & !{round(f_md,3)}   \\
-        $f_{v,k}$    & !{f_vk}   & $f_{v,d}$    & !{round(f_vd,3)}  \\
-        $f_{c,90,k}$ & !{f_c90k} & $f_{c,90,d}$ & !{round(f_c90d,3)} \\
-        $f_{t,90,k}$ & !{f_t90k} & $f_{t,90,d}$ & !{round(f_t90d,3)} \\
-        $E_{0,mean}$ & !{E0mean} & $E_{0,05}$   & !{E005} \\
-        $G_{mean}$   & !{Gmean}  & $G_{05}$     & !{G05}\\
+        $f_{m,k}$    & !{f_mk}   & $f_{m,d}$    & !{round(f_md,3)}  & $E_{0,mean}$ & !{E0mean} \\
+        $f_{v,k}$    & !{f_vk}   & $f_{v,d}$    & !{round(f_vd,3)}  & $E_{0,05}$   & !{E005} \\
+        $f_{c,90,k}$ & !{f_c90k} & $f_{c,90,d}$ & !{round(f_c90d,3)} & $G_{mean}$   & !{Gmean} \\
+        $f_{t,90,k}$ & !{f_t90k} & $f_{t,90,d}$ & !{round(f_t90d,3)} &  $G_{05}$     & !{G05}\\
         \bottomrule
     \end{tabular}
 \end{table} 
