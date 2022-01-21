@@ -24,6 +24,9 @@ h_ap = 1800-500 # altezza apice
 h_0 = 1315-500 # altezza appoggio
 l = 16000 
 
+# Sollecitazioni di progetto:
+Q = 19.56 #kN/m == N/mm
+
 alpha = np.radians(alpha)
 
 # volume della trave 
@@ -42,9 +45,8 @@ V = min(2/3 * V_b , V_colmo)
 
 V_0 = 0.01
 
-# Sollecitazioni di progetto:
-Q = 19.56 #kN/m == N/mm
 
+###################################
 M_d = Q * l**2 / 8
 V_d = Q *l / 2
 
@@ -251,7 +253,7 @@ Si deve avere
 Occorre dapprima calcolare le azioni di progetto nella sezione C partendo dalla quota della sezione $x^{C} = \dfrac{l}{2} - 0.5\cdot h_{ap}$ =  \SI{!{round(l/2 - 0.5*h_ap,0)}}{\milli\metre}, in quanto il carico e la trave sono simmetriche rispetto la mezzerie.
 Le azioni a tale $x$ valgono:
 \begin{equation}
-    V_{0.5\,ap} = \SI{!{round(V_05ap/10**3,3)}e3}{\newton} \qquad M_{0.5\,ap} = \SI{!{round(M_05ap/10**6,3)}e6}{\newton\milli\metre}
+    V_{0.5\,ap} = \SI{!{round(V_05ap/10**3,3)}}{\kilo\newton} \qquad M_{0.5\,ap} = \SI{!{round(M_05ap/10**6,3)}}{\kilo\newton\milli\metre}
 \end{equation}
 
 Il secondo termine della disequazione di verifica si calcola nello stesso modo di quanto visto nel paragrafo precedente con $M = M_{0.5\,ap}$ e $h = h_{0.5\,ap} = \SI{!{round(h_ap_05,0)}}{\milli\metre}$ variati. 
@@ -311,7 +313,7 @@ In corrispondenza di questa sezione si hanno le seguenti caratteristiche:
     %
     M_{d}^{max}
     &= V_d \cdot x^{max} - \dfrac{Q \cdot (x^{max}) ^2}{2}
-    = \SI{!{round(M_xmax/10**6,3)}e6}{\newton\milli\metre} \\
+    = \SI{!{round(M_xmax/10**6,3)}}{\kilo\newton\milli\metre} \\
     %
     \sigma_{m,d}^{max} = \sigma_{m,\alpha,d}
     &= \frac{6 \cdot M_{d}^{max}}{b \cdot h_{x^{max}}^2} 

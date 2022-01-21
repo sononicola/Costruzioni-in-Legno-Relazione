@@ -1,16 +1,4 @@
-\chapter{Verifica degli elementi}
 \section{Arcarecci}
-
-\begin{pythontexcustomcode}{py}
-import numpy as np
-from StrengthClasses.glulam_strength_classes import glulam
-def verifica(a,b,name):
-    if a<b:
-        print('La verifica a ' + name + ' è pertanto soddisfatta')
-    else:
-        print('La verifica a ' + name + ' non è soddisfatta')
-\end{pythontexcustomcode}
-
 \begin{pycode}[arcarecci]
 glulam_class = 'GL28h'
 kmod = 0.9
@@ -23,17 +11,17 @@ rho_k, rho_mean = glulam(glulam_class)
 
 f_md, f_t0d, f_t90d, f_c0d, f_c90d, f_vd, f_rd = (kmod * X_k / gammaM for X_k in glulam(glulam_class)[0:7])
 
-M_d = 9.6296875 #kNm
-V_d = 7.70375 #kN
-
-M_d = M_d * 10**6 
-V_d = V_d * 10**3 
-
 b = 160
 h = 200
 l = 5000
 
+# Sollecitazione di progetto:
+Q = 3.0815 #kN/m == N/mm
+
 ###########################################################
+M_d = Q * l**2 / 8
+V_d = Q *l / 2
+
 W = b * h**2 / 6 #sezioni rettangolari
 J = b*h**3 / 12
 
@@ -175,7 +163,6 @@ Quindi la resistenza di progetto vale
     = !{k_crit} \cdot \SI{!{round(f_md,3)}}{\mega\pascal}
     = \SI{!{round(k_crit * f_md,3)}}{\mega\pascal}
 \]
-%\pyc{verifica(sigma_md,k_crit * f_md,'flessione')}
 
 \subsection{Taglio}
 Si deve avere
