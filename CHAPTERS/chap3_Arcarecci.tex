@@ -10,7 +10,7 @@ def verifica(a,b,name):
         print('La verifica a ' + name + ' non è soddisfatta')
 \end{pythontexcustomcode}
 
-\begin{pycode}
+\begin{pycode}[arcarecci]
 # N/mm2
 f_mk = 28.
 f_vk = 3.5
@@ -78,7 +78,7 @@ def w_inst(q):
 
 \end{pycode}
 
-\begin{pysub}
+\begin{pysub}[arcarecci]
 Dati di progetto per il legno lamellare $GL28h$, $\gamma_M = !{gammaM}$:
 \begin{center}
     \begin{tabular}{lS[table-format=2.1] @{\hspace{1cm}} lS[table-format=5.0]}
@@ -94,7 +94,6 @@ Dati di progetto per il legno lamellare $GL28h$, $\gamma_M = !{gammaM}$:
 Sezione di verifica: $\SI{!{b}}{} \times \SI{!{h}}{\milli\metre}$
 
 Classe di servizio 2: $k_{mod} = !{kmod}$
-\end{pysub}
 
 
 disegno, momento, taglio, sezione, ecc
@@ -103,7 +102,6 @@ disegno, momento, taglio, sezione, ecc
     \sigma_{m,d} \leq f_{m,d} = \frac{k_{mod} \cdot f_{m,k}}{\gamma_M} 
 \end{equation}
 
-\begin{pysub}
 La sollecitazione massima la si ha in mezzeria, pertanto è pari, avendo sezione rettangolare, a:
 \[
 \sigma_{m,d} 
@@ -112,14 +110,13 @@ La sollecitazione massima la si ha in mezzeria, pertanto è pari, avendo sezione
 = \frac{\SI{!{round(M_d/10**6,3)}e6}{\newton\milli\metre}} {\dfrac {!{b} \cdot !{h}^2}{6} \si{\milli\metre\tothe{3}}} 
 = \SI{!{round(sigma_md,3)}}{\mega\pascal} 
 \]
-\end{pysub}
+
 
 Sebbene lo sbandamento sia impedito, pur tenendone conto si ha:
 \begin{equation}
      \sigma_{m,d} \leq k_{crit} \cdot f_{m,d} 
 \end{equation}
 dove 
-\begin{pysub}
 \begin{equation}
     k_{crit} =
     \begin{cases}
@@ -156,11 +153,9 @@ Quindi la resistenza di progetto vale
     = !{k_crit} \cdot \frac{!{kmod} \cdot \SI{!{f_mk}}{\mega\pascal}}{!{gammaM}} 
     = \SI{!{round(k_crit * f_md,3)}}{\mega\pascal}
 \]
-\end{pysub}
-\pyc{verifica(sigma_md,k_crit * f_md,'flessione')}
+%\pyc{verifica(sigma_md,k_crit * f_md,'flessione')}
 
 \subsection{Taglio}
-\begin{pysub}
 Si deve avere
 \begin{equation}
     \tau_d \leq f_{v,d} = \frac{k_{mod} \cdot f_{v,k}}{\gamma_M}  
@@ -186,11 +181,9 @@ in cui da normativa (C.4.4.8.1.9) per il legno lamellare
     = \dfrac{2.5}{!{f_vk}} \cdot !{b}
     = \SI{!{round(b_eff,1)}}{\milli\metre}
 \]
-\end{pysub}
-\pyc{verifica(sigma_md,k_crit * f_md,'taglio')}
+%\pyc{verifica(sigma_md,k_crit * f_md,'taglio')}
 
 \subsection{Freccia}
-\begin{pysub}
 La freccia dovuta al contributo del momento flettente e del taglio, nel caso di semplice appoggio vale
 \begin{equation}
     w(q) = \dfrac{5}{384} \frac{q \cdot l^4}{E_{0,mean} \cdot J} + \chi \dfrac{1}{8} \frac{q \cdot l^2}{G_{mean} \cdot b \cdot h}
