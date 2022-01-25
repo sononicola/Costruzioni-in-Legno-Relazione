@@ -1,12 +1,12 @@
-\section{Arcarecci}
-\begin{pycode}[arcarecci]
+\section{Trave Solaio}
+\begin{pycode}[TraveSolaio]
 glulam_class = 'GL28h'
 kmod = 0.9
 gammaM = 1.45
 
 # Per gli SLE
 k_def = 0.6
-psi2_1 = 0.
+psi2_1 = 0.3
 # psi0_2 =
 # psi2_2 =
 
@@ -16,16 +16,15 @@ rho_k, rho_mean = glulam(glulam_class)
 
 f_md, f_t0d, f_t90d, f_c0d, f_c90d, f_vd, f_rd = (kmod * X_k / gammaM for X_k in glulam(glulam_class)[0:7])
 
-b = 160
-h = 200
-l = 5000
+b = 200
+h = 700
+l = 7635
 
 # Sollecitazione di progetto:
-Q = 3.0815 #kN/m == N/mm
-SLE_rara_perm = 0.23+0.545 # g1 e g2
-SLE_rara_acc1 = 1.31 #carico accidentale principale
+Q = 34.41 #kN/m == N/mm
+SLE_rara_perm = 15.6 # g1 e g2
+SLE_rara_acc1 = 8.66 #carico accidentale principale
 # SLE_rara_acc2 =  eventualmente aggiungerlo e de-commentare nella W_net
-
 
 ###########################################################
 M_d = Q * l**2 / 8
@@ -65,6 +64,13 @@ b_eff = 2.5/f_vk * b
 tau_d = V_d * 1.5 / (b_eff * h)
 f_vd = kmod * f_vk / gammaM
 
+## Compressione 90 appoggio
+l_appoggio = 234 
+A_ef = b* (l_appoggio+30+0) # min(30mm , a , l_appoggio, l/2) sx e dx
+k_c90 = 1.75
+
+sigma_c90_appoggio = V_d / A_ef
+
 #Freccia
 chi = 1.2
 def w_inst(q): 
@@ -81,7 +87,7 @@ w_netFin_tot = w_netFin_perm + w_netFin_acc1 # + w_netFin_acc2
 
 \end{pycode}
 
-\begin{pysub}[arcarecci]
+\begin{pysub}[TraveSolaio]
 Dati di progetto per il legno lamellare $GL28h$, $\gamma_M = !{gammaM}$:
 \begin{table}[H]
     \centering
@@ -199,6 +205,24 @@ in cui da normativa (C.4.4.8.1.9) per il legno lamellare
     = \SI{!{round(b_eff,1)}}{\milli\metre}
 \]
 Essendo $\SI{!{round(tau_d,3)}}{\mega\pascal} < \SI{!{round(f_vd,3)}}{\mega\pascal}$ la verifica è soddisfatta.
+
+\subsection{Compressione perpendicolare appoggio}
+Si deve avere 
+\begin{equation}
+    \sigma_{c,90,d} \leq k_{c,90} \cdot f_{c,90,d}
+\end{equation}
+in cui $k_{c,90}$ vale $!{k_c90}$ per il legno lamellare e $f_{c,90,d}$ è pari a \SI{!{round(f_c90d,3)}}{\mega\pascal}.
+
+La tensione all'appoggio si calcola come
+\[
+    \sigma_{c,90,d} = \frac{V_d}{A_{ef}} = \frac{\SI{!{round(V_d/10**3,3)}e3}{\newton}}{\SI{!{round(A_ef,1)}}{\milli\metre\squared}} = \SI{!{round(sigma_c90_appoggio,3)}}{\mega\pascal}
+\]
+in cui $A_{ef}$ consiste nell'area di contatto efficace $b \cdot l_{ef}$, calcolata aumentando la lunghezza di appoggio della scarpa mettallica (che vale \SI{!{l_appoggio}}{\milli\metre}) di \SI{30}{\milli\metre} in un solo lato.
+
+Si ha quindi
+\[
+    \SI{!{round(sigma_c90_appoggio,3)}}{\mega\pascal} <  !{round(k_c90,3)} \cdot \SI{!{round(f_c90d,3)}}{\mega\pascal} = \SI{!{round(k_c90 * f_c90d,3)}}{\mega\pascal}
+\]
 
 \subsection{Freccia}
 La freccia dovuta al contributo del momento flettente e del taglio, nel caso di semplice appoggio vale

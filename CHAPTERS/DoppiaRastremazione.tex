@@ -13,7 +13,7 @@ gammaM = 1.45
 
 # Per gli SLE
 k_def = 0.6
-psi2_1 = .0
+psi2_1 = 0.
 # psi0_2 =
 # psi2_2 =
 
@@ -429,7 +429,7 @@ Le deformazioni istantanee per i carichi agli SLE con combinazione rara valgono:
 \begin{align}
     w_{inst,G}
     &= w(q = \SI{!{round(SLE_rara_perm,2)}}{\kilo\newton\per\metre}) 
-    = \SI{!{round(w_inst_perm,22)}}{\milli\metre}  \\
+    = \SI{!{round(w_inst_perm,2)}}{\milli\metre}  \\
     %
     w_{inst,Q1}
     &= w(q = \SI{!{round(SLE_rara_acc1,2)}}{\kilo\newton\per\metre}) 
@@ -445,11 +445,11 @@ Le deformazioni istantanee per i carichi agli SLE con combinazione rara valgono:
 Con $k_{def} = !{k_def}, \psi_{21} = !{psi2_1}$, in assenza di controfreccia iniziale e nelle ipotesi che gli elementi abbiano lo stesso comportamento viscoelastico, le deformazioni finali per i carichi agli SLE con combinazione rara assumono la forma semplificata:
 \begin{align}
     w_{fin,G}
-    &= w_{inst,G} (1 + k_{def})
+    &= w_{inst,G} \cdot (1 + k_{def})
     = \SI{!{round(w_netFin_perm,2)}}{\milli\metre}  \\
     %
     w_{fin,Q1}
-    &= w_{inst,Q1} (1 + \psi_{21} \, k_{def})
+    &= w_{inst,Q1} \cdot (1 + \psi_{21} \, k_{def})
     = \SI{!{round(w_netFin_acc1,2)}}{\milli\metre} \\
     %
     w_{fin,TOT}
