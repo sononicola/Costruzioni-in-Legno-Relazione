@@ -10,7 +10,12 @@ timberType = 'lamellare'
 glulam_class = 'GL28h'
 kmod = 0.9
 gammaM = 1.45
+
+# Per gli SLE
 k_def = 0.6
+psi2_1 = .0
+# psi0_2 =
+# psi2_2 =
 
 f_mk, f_t0k, f_t90k, f_c0k, f_c90k, f_vk, f_rk, \
 E0mean, E005, E90mean, E9005, Gmean, G05, Grmean, Gr05, \
@@ -26,6 +31,9 @@ l = 16000
 
 # Sollecitazioni di progetto:
 Q = 19.56 #kN/m == N/mm
+SLE_rara_perm = 8.6428 # g1 e g2
+SLE_rara_acc1 = 10.9167 #carico accidentale principale
+# SLE_rara_acc2 =  eventualmente aggiungerlo e de-commentare nella W_net
 
 alpha = np.radians(alpha)
 
@@ -134,11 +142,17 @@ k_v = 2/(1 + (h_ap/h_0)**(2/3))
 J_0 = b*h_0**3 / 12 # Nella sezone di appoggio e poi vengono usati i due coefficienti
 
 chi = 1.2
-def w_inst(q):
+def w_inst_doppiaRastr(q): # Solo per doppia rastremazione:
     w_inst_M = k_m * ( 5/384 * q * l**4 / (E0mean * J_0) )
     w_inst_V = k_v * ( chi * 1/8 * q * l**2 / (Gmean * b * h_0) )
     w_inst = w_inst_M + w_inst_V
     return w_inst
+w_inst_perm = w_inst_doppiaRastr(SLE_rara_perm)
+w_inst_acc1 = w_inst_doppiaRastr(SLE_rara_acc1)
+w_netFin_perm = w_inst_perm*(1 + k_def)
+w_netFin_acc1 = w_inst_acc1*(1 + k_def*psi2_1)
+# w_netFin_acc2 = w_inst_acc2*(psi0_2 + k_def*psi2_2)
+w_netFin_tot = w_netFin_perm + w_netFin_acc1 # + w_netFin_acc2
 
 \end{pycode}
 
@@ -408,7 +422,46 @@ Per un carico unitario assume il valore di riferimento:
 \begin{equation}
     w(q = \SI{1}{\kilo\newton\per\metre}) 
     = !{round(k_m,3)} \cdot \dfrac{5}{384} \frac{1 \cdot !{l}^4}{!{E0mean} \cdot \SI{!{round(J_0/10**6,3)}e6}{}} + !{round(k_v,3)} \cdot !{chi} \dfrac{1}{8} \frac{1 \cdot !{l}^2}{!{Gmean} \cdot !{b} \cdot !{h_0}} 
-    = \SI{!{round(w_inst(1),3)}}{\milli\metre}
+    = \SI{!{round(w_inst_doppiaRastr(1),3)}}{\milli\metre}
 \end{equation}
+
+Le deformazioni istantanee per i carichi agli SLE con combinazione rara valgono:
+\begin{align}
+    w_{inst,G}
+    &= w(q = \SI{!{round(SLE_rara_perm,2)}}{\kilo\newton\per\metre}) 
+    = \SI{!{round(w_inst_perm,22)}}{\milli\metre}  \\
+    %
+    w_{inst,Q1}
+    &= w(q = \SI{!{round(SLE_rara_acc1,2)}}{\kilo\newton\per\metre}) 
+    = \SI{!{round(w_inst_acc1,2)}}{\milli\metre}
+    \quad\Longrightarrow\quad
+    l/w_{inst,Q1} = \SI{!{round(l/w_inst_acc1,1)}} \,>\, 300\\
+    %
+    w_{inst,TOT}
+    &= w_{inst,G} + w_{inst,Q1}
+    = \SI{!{round(w_inst_perm + w_inst_acc1,2)}}{\milli\metre}
+\end{align} %
+
+Con $k_{def} = !{k_def}, \psi_{21} = !{psi2_1}$, in assenza di controfreccia iniziale e nelle ipotesi che gli elementi abbiano lo stesso comportamento viscoelastico, le deformazioni finali per i carichi agli SLE con combinazione rara assumono la forma semplificata:
+\begin{align}
+    w_{fin,G}
+    &= w_{inst,G} (1 + k_{def})
+    = \SI{!{round(w_netFin_perm,2)}}{\milli\metre}  \\
+    %
+    w_{fin,Q1}
+    &= w_{inst,Q1} (1 + \psi_{21} \, k_{def})
+    = \SI{!{round(w_netFin_acc1,2)}}{\milli\metre} \\
+    %
+    w_{fin,TOT}
+    &= w_{fin,G} + w_{fin,Q1}
+    = \SI{!{round(w_netFin_tot,2)}}{\milli\metre}
+    \quad\Longrightarrow\quad
+    l/w_{fin,TOT} = \SI{!{round(l/w_netFin_tot,1)}} \,>\, 200
+\end{align} %
+
+
+ 
+
+
 
 \end{pysub}
