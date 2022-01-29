@@ -97,7 +97,14 @@ numberstyle=\footnotesize,}
 
 \input{CHAPTERS/chap1_Introduzione.tex}
 \input{CHAPTERS/chap2_AnalisiCarichi.tex}
-\input{CHAPTERS/chap3_Arcarecci.tex}
-\input{CHAPTERS/DoppiaRastremazione.tex}
-\input{CHAPTERS/Viti.tex}
+\begin{pythontexcustomcode}{py}
+import numpy as np
+from StrengthClasses.glulam_strength_classes import glulam
+\end{pythontexcustomcode}
+\chapter{Verifica degli elementi}
+        \input{CHAPTERS/chap3_Arcarecci.tex}
+        \input{CHAPTERS/DoppiaRastremazione.tex}
+        \input{CHAPTERS/TraveSolaio.tex}
+ \chapter{Verifica dei collegamenti}
+        \input{CHAPTERS/Viti.tex}
 \end{document} 

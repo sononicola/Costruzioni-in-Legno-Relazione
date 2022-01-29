@@ -28,6 +28,7 @@ b = 240
 h_ap = 1800-500 # altezza apice
 h_0 = 1315-500 # altezza appoggio
 l = 16000 
+l_appoggio = 300
 
 # Sollecitazioni di progetto:
 Q = 19.56 #kN/m == N/mm
@@ -63,7 +64,6 @@ V_d = Q *l / 2
 ## Parte di trave a doppia rastremazione
 
 # Flessione
-f_md = kmod * f_mk / gammaM
 
 t = 30 # spessore lamelle LVL
 r_in = 17000 #raggio interno se curva o centinata. altrimenti non serve
@@ -89,7 +89,6 @@ sigma_md = k_l * 6 * M_d / (b*h_ap**2) # nel punto in mezzeria
 k_dis =  1.4 if beamType == 'DoppiaRastremazione' or  beamType == 'Curva' else  1.7
 k_vol = 1 if timberType == 'massiccio' else (V_0/V)**0.2 
 
-f_t90d = f_t90k * kmod / gammaM
 k_dis * k_vol * f_t90d
 
 # k_p solo per trave doppia rastremazione. aggiungere le altre!
@@ -107,7 +106,6 @@ x_05ap = l/2 - 0.5*h_ap
 V_05ap = Q * (2 * 0.5*h_ap) / 2
 M_05ap = V_d * (l/2 - 0.5*h_ap) - Q*(l/2 - 0.5*h_ap)**2 / 2
 
-f_vd = f_vk * kmod / gammaM
 
 b_eff = 2.5/f_vk * b
 tau_d_05ap = 1.5*V_05ap/(b_eff*h_ap_05)
@@ -120,7 +118,6 @@ h_max = h_ap - np.tan(alpha)*(l/2 - x_max) # altezza corrispondente alla x_max
 M_xmax = V_d * x_max - Q*x_max**2 / 2
 sigma_md_max = 6*M_xmax / (b*h_max**2)
 
-f_c90d = f_c90k * kmod / gammaM
 
 k_mAlpha_compressione = 1 / np.sqrt(1 + (np.tan(alpha)*f_md/(1.5*f_vd))**2 + ((np.tan(alpha))**2*f_md/f_c90d)**2 )
 
@@ -129,7 +126,6 @@ tau_d_appoggio = 1.5*V_d/(b_eff*h_0)
 # con b_eff uguale a quella del punto sopra
 
 ## Compressione 90 appoggio
-l_appoggio = 300
 A_ef = b* (l_appoggio+30+0) # min(30mm , a , l_appoggio, l/2) sx e dx
 k_c90 = 1.75
 
@@ -160,13 +156,13 @@ w_netFin_tot = w_netFin_perm + w_netFin_acc1 # + w_netFin_acc2
 \begin{figure}[H]
     \centering
     \includegraphics[]{IMG/TraveDoppiaRastremazione.pdf}
-    \caption{Indicazione della nomenclatura adottata per le zone di verifica lungo lo sviluppo della trave e delle condizioni di carico assunte}
+    \caption{Indicazione della nomenclatura adottata per le zone di verifica lungo lo sviluppo della trave e delle condizioni di carico assunte per la trave a doppia rastremazione}
     \label{fig:TraveDoppiaRastremazione}
 \end{figure}
 
 \begin{table}[H]
     \centering
-    \caption{Azioni di progetto nei punti di sezione indicati in figura per la trave a doppia rastremazione}
+    \caption{Azioni di progetto SLU nei punti di sezione indicati in figura per la trave a doppia rastremazione}
     \begin{tabular}{c  S[table-format=4.1] S[table-format=4.3] S[table-format=3.3]}
         \toprule
 		%\multicolumn{4}{c}{Azioni di progetto nei punti di sezione}\\

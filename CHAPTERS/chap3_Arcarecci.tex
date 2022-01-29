@@ -36,7 +36,6 @@ J = b*h**3 / 12
 
 #Flessione:
 sigma_md = M_d / W
-f_md = kmod * f_mk / gammaM
 
 # Sbandamento :
 # Vedi pagina 291 del libro
@@ -63,7 +62,6 @@ else:
 #kcrit legno lamellare = 2.5/f_vk -> b_eff = kcr * b
 b_eff = 2.5/f_vk * b
 tau_d = V_d * 1.5 / (b_eff * h)
-f_vd = kmod * f_vk / gammaM
 
 #Freccia
 chi = 1.2
@@ -82,10 +80,15 @@ w_netFin_tot = w_netFin_perm + w_netFin_acc1 # + w_netFin_acc2
 \end{pycode}
 
 \begin{pysub}[arcarecci]
-Dati di progetto per il legno lamellare $GL28h$, $\gamma_M = !{gammaM}$:
+    \begin{figure}[H]
+        \centering
+        \includegraphics[]{IMG/TraveRettangolare.pdf}
+        \caption{Indicazione della nomenclatura e dello schema statico adottato per gli arcarecci}
+        \label{fig:Arcarecci}
+    \end{figure}
 \begin{table}[H]
     \centering
-    \caption{Azioni di progetto nei punti di sezione indicati in figura per la trave a doppia rastremazione}
+    \caption{Azioni di progetto SLU nei punti di sezione indicati in figura per gli arcarecci}
     \begin{tabular}{c  S[table-format=4.1] S[table-format=4.3] S[table-format=3.3]}
         \toprule
 		%\multicolumn{4}{c}{Azioni di progetto nei punti di sezione}\\
@@ -98,7 +101,7 @@ Dati di progetto per il legno lamellare $GL28h$, $\gamma_M = !{gammaM}$:
 \end{table} 
 \begin{table}[H]
     \centering
-    \caption{Valori di progetto per la verifica della trave a doppia rastremazione}
+    \caption{Valori di progetto SLU la verifica della trave a doppia rastremazione}
     \begin{tabular}{lS[table-format=2.1] @{\hspace{2cm}} lS[table-format=2.3]@{\hspace{2cm}} lS[table-format=5.1]}
         \toprule
 		\multicolumn{6}{c}{Valori geometrici e coefficienti di esposizione o durata del carico}\\

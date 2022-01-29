@@ -19,6 +19,7 @@ f_md, f_t0d, f_t90d, f_c0d, f_c90d, f_vd, f_rd = (kmod * X_k / gammaM for X_k in
 b = 200
 h = 700
 l = 7635
+l_appoggio = 234 
 
 # Sollecitazione di progetto:
 Q = 34.41 #kN/m == N/mm
@@ -35,7 +36,6 @@ J = b*h**3 / 12
 
 #Flessione:
 sigma_md = M_d / W
-f_md = kmod * f_mk / gammaM
 
 # Sbandamento :
 # Vedi pagina 291 del libro
@@ -62,10 +62,8 @@ else:
 #kcrit legno lamellare = 2.5/f_vk -> b_eff = kcr * b
 b_eff = 2.5/f_vk * b
 tau_d = V_d * 1.5 / (b_eff * h)
-f_vd = kmod * f_vk / gammaM
 
 ## Compressione 90 appoggio
-l_appoggio = 234 
 A_ef = b* (l_appoggio+30+0) # min(30mm , a , l_appoggio, l/2) sx e dx
 k_c90 = 1.75
 
@@ -88,10 +86,15 @@ w_netFin_tot = w_netFin_perm + w_netFin_acc1 # + w_netFin_acc2
 \end{pycode}
 
 \begin{pysub}[TraveSolaio]
-Dati di progetto per il legno lamellare $GL28h$, $\gamma_M = !{gammaM}$:
+    \begin{figure}[H]
+        \centering
+        \includegraphics[]{IMG/TraveRettangolare.pdf}
+        \caption{Indicazione della nomenclatura e dello schema statico adottato per la trave del solaio}
+        \label{fig:TraveSolaio}
+    \end{figure}
 \begin{table}[H]
     \centering
-    \caption{Azioni di progetto nei punti di sezione indicati in figura per la trave a doppia rastremazione}
+    \caption{Azioni di progetto SLU nei punti di sezione indicati in figura per la trave del solaio}
     \begin{tabular}{c  S[table-format=4.1] S[table-format=4.3] S[table-format=3.3]}
         \toprule
 		%\multicolumn{4}{c}{Azioni di progetto nei punti di sezione}\\
