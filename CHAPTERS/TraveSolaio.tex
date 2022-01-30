@@ -38,17 +38,9 @@ J = b*h**3 / 12
 sigma_md = M_d / W
 
 # Sbandamento :
-# Vedi pagina 291 del libro
-l_t = 2500 # distanza tra due ritegni torsionali successivi (l/2)
-a1 = 1.13
-a2 = 1.44
-az = h/2
-# caso generico per il RETTANGOLO e non semplificato per h/b > 4
-B = E0mean * b**3 * h / 12 # rigidezza flessionale attorno asse z
-T = Gmean * b**3 * h / (3*(1 + 0.6 * b/h)) # rigidezza torsionale 
-l_eff = l_t / (a1 * (1 - a2 * az/l_t * np.sqrt(B/T)))
+l_eff = 0.9*l + 2*h 
 
-sigma_mcrit = np.pi/l_eff * b**2 / h * E005 * np.sqrt(Gmean/E0mean)
+sigma_mcrit = (0.78 * b**2 * E005) / (h * l_eff) 
 lambda_relm = np.sqrt(f_mk/sigma_mcrit)
 if lambda_relm < 0.75:
     k_crit = 1
@@ -145,7 +137,8 @@ La sollecitazione massima la si ha in mezzeria, pertanto è pari, avendo sezione
 \]
 
 
-Sebbene lo sbandamento sia impedito, pur tenendone conto si ha:
+\subsection{Stabilità flesso-torsionale}
+Si deve avere
 \begin{equation}
      \sigma_{m,d} \leq k_{crit} \cdot f_{m,d} 
 \end{equation}
@@ -155,9 +148,9 @@ dove
     \begin{cases}
         1 & \text{se \quad $ \lambda_{rel,m} \leq 0.75$} \\
         1.56 - 0.75 \cdot \lambda_{rel,m} & \text{se \quad $0.75 \leq \lambda_{rel,m} \leq 1.4$} \\
-        \dfrac{1}{\lambda_{rel,m}^2} & \text{se \quad $\lambda_{rel,m} \geq 0.75$}
+        \dfrac{1}{\lambda_{rel,m}^2} & \text{se \quad $\lambda_{rel,m} \geq 1.4$}
     \end{cases}
-    \quad =  !{k_crit}
+    \quad =  !{round(k_crit,3)}
 \end{equation}
 in cui 
 \[
@@ -167,25 +160,22 @@ in cui
     = \sqrt{  \frac{!{f_mk}}     {!{round(sigma_mcrit,1)}}  } 
     = !{round(lambda_relm,3)} \\
     \sigma_{m,crit} 
-    &= \dfrac{\pi}{l_{eff}} \dfrac{b^2}{h} E_{0.05} \sqrt{\dfrac{G_{mean}}{E_{mean}}} 
-    = \dfrac{\pi}{!{round(l_eff,1)}} \dfrac{!{b}^2}{!{h}} !{E005} \sqrt{\dfrac{!{Gmean}}{!{E0mean}}} 
+    &= \dfrac{0.78}{l_{eff}} \dfrac{b^2}{h} E_{0.05}
+    = \dfrac{0.78}{!{round(l_eff,1)}} \dfrac{!{b}^2}{!{h}} !{E005}
     = \SI{!{round(sigma_mcrit,1)}}{\mega\pascal} \\
     l_{eff}  
-    &= \frac{l_t}{a_1 \left(1 - a_2  \dfrac{a_z}{l_t} \sqrt{\dfrac{B}{T}}\right)} 
-    = \frac{!{l_t}}{!{a1} \left(1 - !{a2}  \dfrac{!{az}}{!{l_t}} \sqrt{\dfrac{!{round(B,1)}}{!{round(T,1)}}}\right)}
-    =   
-    \SI{!{round(l_eff,1)}}{\milli\metre}
+    &= 0.9 \, l + 2 \, h
+    = 0.9 \cdot !{round(l,1)} + 2 \cdot !{h}
+    = \SI{!{round(l_eff,1)}}{\milli\metre}
 \end{split}
 \]
-avendo preso $l_t = \dfrac{l}{2}, a_z = \dfrac{h}{2}$, i coefficienti di ribaltamento $a_1, a_2$ in base alla condizione di vincolo (tabella E.2 DIN 1052:2004) ed essendo $B$ e $T$ rispettivamente la rigidezza flessionale attorno all'asse $z$ e torsionale di un rettangolo.
+essendo il carico nel bordo compresso dell'elemento.
 
-Quindi la resistenza di progetto vale
+Quindi la verifica diventa
 \[
-    k_{crit} \cdot f_{m,d} 
-    = k_{crit} \cdot f_{m,d}
-    = !{k_crit} \cdot \SI{!{round(f_md,3)}}{\mega\pascal}
-    = \SI{!{round(k_crit * f_md,3)}}{\mega\pascal}
+    \SI{!{round(sigma_md,3)}}{\mega\pascal} <  !{round(k_crit,3)} \cdot \SI{!{round(f_md,3)}}{\mega\pascal} = \SI{!{round(k_crit * f_md,3)}}{\mega\pascal}
 \]
+risultando pertanto soddisfatta.
 
 \subsection{Taglio}
 Si deve avere

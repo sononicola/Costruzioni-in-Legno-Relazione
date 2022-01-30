@@ -64,7 +64,6 @@ V_d = Q *l / 2
 ## Parte di trave a doppia rastremazione
 
 # Flessione
-
 t = 30 # spessore lamelle LVL
 r_in = 17000 #raggio interno se curva o centinata. altrimenti non serve
 if beamType == 'DoppiaRastremazione':
@@ -130,6 +129,26 @@ A_ef = b* (l_appoggio+30+0) # min(30mm , a , l_appoggio, l/2) sx e dx
 k_c90 = 1.75
 
 sigma_c90_appoggio = V_d / A_ef
+
+# Sbandamento flesso-torsionale
+h = (h_0 + h_ap)/2 # altezza media
+
+interasse = 900
+l_eff_1 = 1 * interasse + 2*h # da tabella nel capitolo 6.3.3 EC5 con le opportune modifiche
+# = 1 * interasse = 0.9 perché a ci sono i travetti, + 2 h perché caricata nel bordo compresso
+
+l_eff_2 = 0.9*l + 2*h # senza considerare i travetti come impedimento alla torsione
+
+l_eff = l_eff_2
+
+sigma_mcrit = (0.78 * b**2 * E005) / (h * l_eff) 
+lambda_relm = np.sqrt(f_mk/sigma_mcrit)
+if lambda_relm < 0.75:
+    k_crit = 1
+elif lambda_relm < 1.14:
+    k_crit = 1.56 - .75*lambda_relm
+else:
+    k_crit = 1/(lambda_relm**2)
 
 ### FRECCIA
 k_m = (h_0/h_ap)**3 * 1/(0.15+0.85*(h_0/h_ap))
@@ -396,6 +415,53 @@ Si ha quindi
 \[
     \SI{!{round(sigma_c90_appoggio,3)}}{\mega\pascal} <  !{round(k_c90,3)} \cdot \SI{!{round(f_c90d,3)}}{\mega\pascal} = \SI{!{round(k_c90 * f_c90d,3)}}{\mega\pascal}
 \]
+
+\subsection{Stabilità flesso-torsionale -- Sezione B}
+A favore di sicurezza si utilizza la $\sigma_{m,d}^{max}$ e una altezza $h$ della trave pari alla media tra $h_0$ e $h_{ap}$ che  è minore dell'altezza $h_{x^{max}}$.
+
+Si deve avere:
+\begin{equation}
+    \sigma_{m,d}^{max} \leq k_{crit} \cdot f_{m,d} 
+\end{equation}
+dove 
+\begin{equation}
+    k_{crit} =
+    \begin{cases}
+        1 & \text{se \quad $ \lambda_{rel,m} \leq 0.75$} \\
+        1.56 - 0.75 \cdot \lambda_{rel,m} & \text{se \quad $0.75 \leq \lambda_{rel,m} \leq 1.4$} \\
+        \dfrac{1}{\lambda_{rel,m}^2} & \text{se \quad $\lambda_{rel,m} \geq 1.4$}
+    \end{cases}
+    \quad =  !{round(k_crit,3)}
+\end{equation}
+in cui 
+\[
+\begin{split}
+    \lambda_{rel,m} 
+    &= \sqrt{  \frac{f_{m,k}}     {\sigma_{m,crit}}          } 
+    = \sqrt{  \frac{!{f_mk}}     {!{round(sigma_mcrit,1)}}  } 
+    = !{round(lambda_relm,3)} \\
+    \sigma_{m,crit} 
+    &= \dfrac{0.78}{l_{eff}} \dfrac{b^2}{h} E_{0.05}
+    = \dfrac{0.78}{!{round(l_eff,1)}} \dfrac{!{b}^2}{!{h}} !{E005}
+    = \SI{!{round(sigma_mcrit,1)}}{\mega\pascal} \\
+    l_{eff}  
+    &= \{0.9 \, l + 2 \, h \, ; \,  1 \cdot\textup{interasse} 2 \, h \} 
+    = \{0.9 \cdot !{round(l,1)} + 2 \cdot !{h} \, ; \, 1 \cdot !{round(interasse,1)} + 2 \cdot !{h} \} \\
+    &= \{\SI{!{round(l_eff_2,1)}}{\milli\metre} \, ; \, \SI{!{round(l_eff_1,1)}}{\milli\metre} \}
+    = \SI{!{round(l_eff,1)}}{\milli\metre} \, \textit{(condizione più sfavorevole)}
+\end{split} \quad .
+\]
+Si sono valutate entrambe le possibilità di sbandamento della trave e scelta quella più sfavorevole, ovvero quella che portasse ad un $k_{crit}$ minore. 
+Una considerando una lunghezza libera di inflessione pari a tutta la lunghezza della trave e coefficentata di 0.9; e un'altra nella quale gli arcarecci blocchino la torsione. 
+In questo secondo caso la lunghezza di libera inflessione è pari all'interasse tra gli arcarecci e si ha una via di mezzo tra la condizione con coefficiente $0.9$ e $1$. 
+Si è scelto $1$ per essere a favore di sicurezza. 
+Infine si è sommato $2\,h$ essendo il carico applicato nel bordo compresso dell'elemento.
+
+Quindi la verifica diventa
+\[
+    \SI{!{round(sigma_md_max,3)}}{\mega\pascal} <  !{round(k_crit,3)} \cdot \SI{!{round(f_md,3)}}{\mega\pascal} = \SI{!{round(k_crit * f_md,3)}}{\mega\pascal}
+\]
+risultando pertanto soddisfatta. 
 
 \subsection{Freccia}
 La freccia dovuta al contributo del momento flettente e del taglio, nel caso di semplice appoggio vale
