@@ -71,12 +71,35 @@ w_netFin_tot = w_netFin_perm + w_netFin_acc1 # + w_netFin_acc2
 \end{pycode}
 
 \begin{pysub}[arcarecci]
-    \begin{figure}[H]
-        \centering
-        \includegraphics[]{IMG/TraveRettangolare.pdf}
-        \caption{Indicazione della nomenclatura e dello schema statico adottato per gli arcarecci}
-        \label{fig:Arcarecci}
-    \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[]{IMG/TraveRettangolare.pdf}
+    \caption{Indicazione della nomenclatura e dello schema statico adottato per gli arcarecci}
+    \label{fig:Arcarecci}
+\end{figure}
+\begin{table}[H]
+    \centering
+    \caption{Valori di progetto SLU per la verifica degli arcarecci}
+    \begin{tabular}{lS[table-format=2.2] @{\hspace{2cm}} lS[table-format=2.3]@{\hspace{2cm}} lS[table-format=5.2]}
+        \toprule
+		\multicolumn{6}{c}{Valori geometrici e coefficienti di esposizione o durata del carico}\\
+        \midrule
+		$b$      & \SI{!{b}}{\milli\metre}     & $h$        & \SI{!{h}}{\milli\metre}   & $l$           & \SI{!{l}}{\milli\metre}  \\ 
+        $\gamma_M$      & \SI{!{gammaM}}{}     & $k_{mod}$        & \SI{!{kmod}}{}   & $k_{def}$ & \SI{!{k_def}}{} \\
+        \midrule
+        \multicolumn{6}{c}{Valori di resistenza GL28h [\si{\mega\pascal}] } \\
+        \midrule
+        $f_{m,k}$    & !{f_mk}   & $f_{m,d}$    & !{round(f_md,3)}  & $E_{0,mean}$ & !{E0mean} \\
+        $f_{v,k}$    & !{f_vk}   & $f_{v,d}$    & !{round(f_vd,3)}  & $E_{0,05}$   & !{E005} \\
+        $f_{c,90,k}$ & !{f_c90k} & $f_{c,90,d}$ & !{round(f_c90d,3)} & $G_{mean}$   & !{Gmean} \\
+        $f_{t,90,k}$ & !{f_t90k} & $f_{t,90,d}$ & !{round(f_t90d,3)} &  $G_{05}$     & !{G05}\\
+        \midrule
+        \multicolumn{6}{c}{Valori dei carico $q$ [\si{\kilo\newton\per\metre}] } \\
+        \midrule
+        $SLU$    & !{round(Q,2)}   & $SLE_{rara}^{perm.}$    & !{round(SLE_rara_perm,2)}  & $SLE_{rara}^{acc. 1}$ & !{round(SLE_rara_acc1,2)} \\
+        \bottomrule
+    \end{tabular}
+\end{table} 
 \begin{table}[H]
     \centering
     \caption{Azioni di progetto SLU nei punti di sezione indicati in figura per gli arcarecci}
@@ -90,31 +113,7 @@ w_netFin_tot = w_netFin_perm + w_netFin_acc1 # + w_netFin_acc2
         \bottomrule
     \end{tabular}
 \end{table} 
-\begin{table}[H]
-    \centering
-    \caption{Valori di progetto SLU la verifica della trave a doppia rastremazione}
-    \begin{tabular}{lS[table-format=2.1] @{\hspace{2cm}} lS[table-format=2.3]@{\hspace{2cm}} lS[table-format=5.1]}
-        \toprule
-		\multicolumn{6}{c}{Valori geometrici e coefficienti di esposizione o durata del carico}\\
-        \midrule
-		$b$      & \SI{!{b}}{\milli\metre}     & $h$        & \SI{!{h}}{\milli\metre}   & $l$           & \SI{!{l}}{\milli\metre}  \\ 
-        $\gamma_M$      & \SI{!{gammaM}}{}     & $k_{mod}$        & \SI{!{kmod}}{}   & $k_{def}$ & \SI{!{k_def}}{} \\
-        \midrule
-        \multicolumn{6}{c}{Valori di resistenza GL28h [\si{\mega\pascal}] } \\
-        \midrule
-        $f_{m,k}$    & !{f_mk}   & $f_{m,d}$    & !{round(f_md,3)}  & $E_{0,mean}$ & !{E0mean} \\
-        $f_{v,k}$    & !{f_vk}   & $f_{v,d}$    & !{round(f_vd,3)}  & $E_{0,05}$   & !{E005} \\
-        $f_{c,90,k}$ & !{f_c90k} & $f_{c,90,d}$ & !{round(f_c90d,3)} & $G_{mean}$   & !{Gmean} \\
-        $f_{t,90,k}$ & !{f_t90k} & $f_{t,90,d}$ & !{round(f_t90d,3)} &  $G_{05}$     & !{G05}\\
-        \bottomrule
-    \end{tabular}
-\end{table} 
-Sezione di verifica: $\SI{!{b}}{} \times \SI{!{h}}{\milli\metre}$
-
-Classe di servizio 2: $k_{mod} = !{kmod}$
-
-
-disegno, momento, taglio, sezione, ecc
+Si riportano ora le verifiche svolte calcolate in base al capitolo 6 dell'Eurocodice 5 (UNI EN 1995-1-1), salvo diversamente specificato.
 \subsection{Flessione}
 \begin{equation} 
     \sigma_{m,d} \leq f_{m,d} = \SI{!{round(f_md,3)}}{\mega\pascal}
@@ -181,7 +180,7 @@ La sollecitazione massima che si ha agli appoggi vale
 = \frac{\SI{!{round(V_d/10**3,3)}e3}{\newton}} {!{round(b_eff,1)} \cdot !{h} \si{\milli\metre\tothe{2}}} 
 = \SI{!{round(tau_d,3)}}{\mega\pascal} 
 \]
-in cui da normativa (C.4.4.8.1.9) per il legno lamellare 
+in cui da normativa NTC (C.4.4.8.1.9) per il legno lamellare 
 \[
     b_{eff} 
     = k_{cr} \cdot b 

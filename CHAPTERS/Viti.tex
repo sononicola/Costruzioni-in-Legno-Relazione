@@ -98,7 +98,15 @@ Entrambe le viti sono sottoggette a puro sforzo assiale ed essendo inclinate ad 
 Per la vite sottoposta a sola trazione si tengono conto dei modi di rottura per trazione del materiale acciaio e della rottura per estrazione della vite lato elemento principale $1$ e lato elemento secondario $2$.
 Per la vite sottoposta a sola compressione si tiene conto della rottura per estrazione nei due elementi, e della rottura a instabilità per carico di punta a compressione.
 Infine si tengono conto delle distanze minime dal bordo e dalle estremità.
-\subsection{Resistenze caratteristiche $R_k$ del singolo connettore}
+
+Le vite utilizzate sono della ditta Wurth e denominate \textit{ASSY PLUS VG TC}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 0.9\textwidth]{IMG/ViteWurth.pdf}
+    \caption{Rappresentazione della vite ASSY PLUS VG TC nel quale la nomenclatura corrisponde a $d_1 = d$ e $d_2 = d_1$}
+    \label{fig:ViteWurth}
+\end{figure}
+\subsection{Resistenze caratteristiche Rk del singolo connettore}
 \paragraph{Rottura acciaio}
 \begin{equation}
     F_{ax,Rk}^{acciaio} 
@@ -171,6 +179,7 @@ dove
 \]
 
 \paragraph{Instabilità}
+Le formule che seguono derivano dal documento ETA del produttore \textit{11/0190}.
 \begin{equation}
     F_{ax,Rk}^{buck} = k_c \cdot N_{pl,k} = \SI{!{round(k_c,3)}}{} \cdot \SI{!{round(N_pl_k,1)}}{\newton} = \SI{!{round(F_ax_rk_buck,1)}}{\newton}
 \end{equation}
@@ -219,7 +228,7 @@ in cui
     \end{split}
 \]
 
-\subsection{Resistenze di progetto $R_d$ del singolo connettore}
+\subsection{Resistenze di progetto Rd del singolo connettore}
 \begin{align}
     F_{ax,Rd}^{acciaio} 
     &= \dfrac{F_{ax,Rk}^{acciaio}}{\gamma_{M2}} 
@@ -267,5 +276,9 @@ mentre per quella di compressione:
 
 Le verifiche sono pertanto soddisfatte
 \subsection{Distanze minime e distanze effettive}
-
+Secondo il paragrafo 8.7.2 le distanze minime devono essere almeno di:
+\begin{equation}
+    a_1 = 7d = !{7*d} \quad a_2 = 5d = !{5*d} \quad a_{1,CG} = 10d = !{10*d} \quad a_{2,CG} = 4d= \SI{!{4*d}}{\milli\metre}
+\end{equation}
+che sono ampiamente rispettate in quanto $a_{2,CG} + a_2 + a_2 + a_{2,CG} = \SI{!{18*d}}{\milli\metre} < \SI{160}{\milli\metre}$ 
 \end{pysub}
